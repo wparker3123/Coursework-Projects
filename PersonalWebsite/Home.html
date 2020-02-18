@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	<title>William Parker</title>
+	<style>
+		.button2:hover {
+			box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+			font-size: 200%;
+		}
+		.button2{
+			font-size: 160%;
+			background-color: #ff9900;
+			border-color: black;
+		}
+		
+		body{
+			background-color: #ffe0b3;
+		}
+		
+	</style>
+	<center><h1>William Parker</h1></center>
+	</head>
+	<body>
+		<center>
+		<button class = "button2" type = "button"><a href = "./home.html" target = "Home">Home</a></button>
+		<button class = "button2" type = "button"><a href = "./AboutMe.html" target = "know bout me">About Me</a></button>
+		<button class = "button2" type = "button"><a href = "./MyWork.html" target = "My work">My Work</a></button>
+		<button class = "button2" type = "button"><a href = "./Contact.html" target = "Contact">Contact Me</a></button>
+		<button class = "button2" type = "button"><a href = "./Social.html" target = "Social Media">Social Media</a></button>
+		</center>
+		<p><center> Welcome to the Website! </center> </p>
+		<!-- <p><center><b>UNDER CONSTRUCTION</b></center></p> 
+		<center><img src="graphic.png" alt="welcome image"></center> -->
+		<center><p>Today is <span id = "currentTime"></span> and it's a perfect day to be on my site! Welcome.
+		If you would like to be sent a newsletter, please fill out the form below.</p></center>
+		<script>
+			var d = new Date();
+			var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+			var days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+			var hour = d.getHours() % 12;
+			var timeOfDay = " A.M.";
+			if(d.getHours() >= 12)
+			{
+				timeOfDay = " P.M.";
+			}
+			
+			document.getElementById("currentTime").innerHTML = days[d.getDay() - 1] + ", " + months[d.getMonth()] + " " + d.getDate() + " , " + hour + ":" + d.getMinutes()+ ":" + d.getMilliseconds() + timeOfDay;
+		</script>
+        
+        <center>
+        <form>
+            <fieldset>
+            <legend>Shipping Information</legend>
+            <label for="name">Name: </label><br>
+            <input type="text" id="name" name="name"><br>
+            <label for="zip">Zip Code: </label><br>
+            <input type="text" id="zip" name="zip">
+            <br><br>
+            <input type="checkbox" id = "cbox" onclick="changeBilling();">Is Billing information same as shipping information?
+            </fieldset>
+            <fieldset>
+            <legend>Billing Information</legend>
+            <label for="name">Name: </label><br>
+            <input type="text" id="name1" name="name"><br>
+            <label for="zip">Zip Code: </label><br>
+            <input type="text" id="zip1" name="zip">
+            <script type="text/javascript">
+            function changeBilling()
+              //  var n = "";
+                //var z = "";
+            {
+               if(document.getElementById("cbox").checked == true)
+                {
+                    //n = document.getElementById("name");
+                    //z = document.getElementById("name");
+                    
+                     document.getElementById("name1").value =  document.getElementById("name").value;
+                     document.getElementById("zip1").value = document.getElementById("zip").value;
+                }
+            }
+                
+            </script>
+            <br><br>
+            <input type="submit" value="Submit" "\>
+            </fieldset>
+        </form></center>
+        
+
+	</body>
+	
+
+</html>
