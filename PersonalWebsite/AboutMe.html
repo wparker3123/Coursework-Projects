@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	<title>William Parker</title>
+	<style>
+		.button2:hover {
+			box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+			font-size: 200%;
+		}
+		.button2{
+			font-size: 160%;
+			background-color: #ff9900;
+			border-color: black;
+		}
+		body{
+			background-color: #ffe0b3;
+		}
+		
+		
+	</style>
+	<center><h1>William Parker</h1></center>
+	<center>
+	<button class = "button2" type = "button"><a href = "./home.html" target = "Home">Home</a></button>
+	<button class = "button2" type = "button"><a href = "./AboutMe.html" target = "know bout me">About Me</a></button>
+	<button class = "button2" type = "button"><a href = "./MyWork.html" target = "My work">My Work</a></button>
+	<button class = "button2" type = "button"><a href = "./Contact.html" target = "Contact">Contact Me</a></button>
+	<button class = "button2" type = "button"><a href = "./Social.html" target = "Social Media">Social Media</a></button>
+	</center>
+	<body>
+		<h1>About Me: </h1>
+		<center><img src="./PicoMe.jfif" id = "pic" alt="pic of me" width="142" height="142"></center>
+        <input type="text" id="picname" name="picname">
+        <button id = "button1" onclick="changePic();">Submit</button>
+         <script type="text/javascript">
+            function changePic()
+            {
+               
+                  document.getElementById('pic').src ="./" + document.getElementById('picname').value;
+            }
+                
+            </script>
+		<p> I am a computer science student attending Kennesaw State University. I'm currently completing my 3rd year of schooling.
+			My major goal right now is to get an internship and gain some insight on my future career.</p>
+	</body>
+
+</html>
