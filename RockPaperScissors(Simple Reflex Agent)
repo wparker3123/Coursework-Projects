@@ -1,0 +1,211 @@
+import random
+import tkinter as tk
+from tkinter import *
+
+#from tkinter.ttk import *
+
+playerMoves = []
+
+#ai agent variables. These are some of my agents "protocols"
+fakePattern = False
+fakeCount = 0
+fakeStop = 0
+fakeVal = ""
+playRandom = False
+randCount = 0
+randStop = 0
+playFirst = True
+
+#GUI variables
+sWins = 0
+rWins = 0
+pWins = 0
+tie = 0
+loss = 0
+
+#helper function that adds user play to the moves list and call determineWinner function
+def play(played):
+    playerMoves.append(played)
+    determineWinner(played, determineMove())
+    
+#function finds the play that the user has played the most so far to determine a pattern, else return none
+def findMax():
+    maxPlay = playerMoves.count("Rock")
+    if(playerMoves.count("Paper") > maxPlay):
+        maxPlay = playerMoves.count("Paper")
+    if(playerMoves.count("Scissors") > maxPlay):
+        maxPlay = playerMoves.count("Scissors")
+    if(playerMoves.count("Paper") == playerMoves.count("Scissors") and playerMoves.count("Paper") == playerMoves.count("Rock")):
+       return "none"
+    return maxPlay
+
+#function finds the play that the user has played the least so far to determine a pattern, else return none
+def findMin():
+    minPlay = playerMoves.count("Rock")
+    if(playerMoves.count("Paper") < minPlay):
+        minPlay = playerMoves.count("Paper")
+    if(playerMoves.count("Scissors") < minPlay):
+        minPlay = playerMoves.count("Scissors")
+    if(playerMoves.count("Paper") == playerMoves.count("Scissors") and playerMoves.count("Paper") == playerMoves.count("Rock")):
+       return "none"
+    return minPlay
+#function returns pattern if the user has any recent patterns of 3 or more, else returns 'none'
+def findPattern():
+    reversedList = playerMoves.copy()
+    reversedList.reverse()
+    patternList = []
+    for i in range(0, len(reversedList) or 7, 1):
+        patternList.append(reversedList[i])
+    if(playerMoves.count("Paper") >= 3):
+        return "Paper"
+    elif(playerMoves.count("Scissors") >= 3):
+        return "Scissors"
+    elif(playerMoves.count("Rock") >= 3):
+        return "Rock"
+    else:
+        return "none"
+    
+
+#agent function; this function compares this current history of the user in order to make next move
+def determineMove():
+    global fakePattern, fakeCount, fakeStop, fakeVal, playRandom, randCount, randStop, playFirst
+    options = []
+    #statistically the most common play for a new player or male is rock. The ai attempts to either tie or win
+    #uses random because players are picking randomly as well. Computer will pick randomly but informed
+    if(playFirst):
+        options = ["Paper", "Rock"]
+        playFirst = False
+        playRandom = True
+        
+        return random.choice(options)
+    #after giving the user chance to establish a pattern we will check for it. If a pattern is not determined, the computer will
+    #decide to fake a pattern or play randomly
+    
+    if(len(playerMoves) >= 3 and not (playRandom or fakePattern)):
+        pattern = findPattern()
+        if( pattern != "none"):
+            options.clear()
+            playRandom = False
+            if(pattern == "Rock"):
+                options = ["Rock", "Paper"]
+                return random.choice(options)
+            elif(pattern == "Scissors"):
+                options = ["Rock", "Scissors"]
+                return random.choice(options)
+            elif(pattern == "Paper"):
+                options = ["Scissors", "Paper"]
+                return random.choice(options)
+        else:
+            #simulating randomness. Computer will choose between its two strategies
+            playRandom = random.choice([True, False])
+            fakePattern = not playRandom
+    #for 2-4 games, the computer will randomly choose a play excluding the losing play from findMax. This is a strategy to keep user from
+    #understanding the ai's pattern
+    if(playRandom):
+        if(randCount == 0 and randStop == 0):
+            randStop = random.choice([2,3,4])
+        
+        options = ["Paper", "Rock", "Scissors"]
+        x = findMax()
+        #if no max is found then nothing is removed
+        if(x == "Paper"):
+            options.remove("Rock")
+        elif(x == "Rock"):
+            options.remove("Scissors")
+        elif(x == "Scissors"):
+            options.remove("Paper")
+    
+        
+        randCount += 1;
+        if(randCount == randStop):
+            playRandom = False
+            randCount = 0
+            randStop = 0
+
+        return random.choice(options)
+    #for 3-5 games, the computer will try to force the user to develop a pattern or make them think the computer will stick to
+    #the pattern. Does this by selecting fake value from the losing hand to findMin()
+    if(fakePattern):
+        
+        if(fakeCount == 0 and fakeStop == 0):
+            fakeStop = random.choice([2,3,4])
+            x = findMin()
+            if(x == "Paper"):
+                fakeVal = "Rock"
+            elif(x == "Rock"):
+                fakeVal = "Scissors"
+            elif(x == "Scissors"):
+                fakeVal = "Paper"
+        fakeCount += 1;
+        if(fakeCount == fakeStop):
+            fakePattern = False
+            fakeCount = 0
+            fakeStop = 0
+
+        return fakeVal
+    
+
+def determineWinner(playerChoice, compChoice):
+    global tie, pWins, rWins, sWins, loss
+    if (playerChoice == compChoice):
+        tie += 1
+    elif(playerChoice == "Paper" and compChoice == "Rock"):
+        pWins += 1
+        p.set("PAPER: " + str(pWins))
+    elif(playerChoice == "Rock" and compChoice == "Scissors"):
+        rWins += 1
+        r.set("ROCK: " + str(rWins))
+    elif(playerChoice == "Scissors" and compChoice == "Paper"):
+        sWins += 1
+        s.set("SCISSORS: " + str(sWins))
+    else:
+        loss += 1
+    scores.set("Wins: " + str(sum([rWins,sWins, pWins])) + " Ties: " + str(tie) + " Losses: " + str(loss) )
+    comp.set("Computer played: " + compChoice)
+    
+         
+         
+        
+
+window = tk.Tk()
+window.geometry("1000x1000")
+window.title("*Rock Paper Scissors*")
+scores = tk.StringVar(value = "Wins: " + str(sum([rWins,sWins, pWins])) + " Ties: " + str(tie) + " Losses: " + str(loss))
+comp = tk.StringVar(value = "Computer played: ")
+r = tk.StringVar(value ="ROCK: " + str(rWins))
+p = tk.StringVar(value = "PAPER: " + str(pWins))
+s  = tk.StringVar(value = "SCISSORS: " + str(sWins))
+
+label1 = tk.Label(text = "Rock, Paper, or Scissor?", font =( 'Verdana', 15))
+label1.pack(side = TOP)
+scoreLabel = tk.Label(textvariable=scores, font =( 'Verdana', 12))
+
+scoreLabel.pack(side = TOP)
+compLabel =tk.Label(textvariable = comp, font =( 'Verdana', 12))
+compLabel.pack(side = TOP)
+#lbl1 = tk.Label(root, text = 'Rock, Paper, or Scissor?', font =( 'Verdana', 18)).pack(side = TOP, pady = 10)
+#image=Image.open(r"C:\Users\wpark\Desktop\SQA\rock.png")
+#image.thumbnail((200,200),Image.ANTIALIAS)
+#photo=ImageTk.PhotoImage(image)
+photo = PhotoImage(file = r"C:\Users\wpark\Desktop\SQA\rock.png")
+ 
+  
+# here, image option is used to 
+# set image on button
+rockButton = tk.Button(textvariable = r, font =( 'Verdana', 15), command = lambda: play("Rock"))
+rockButton.pack(side = LEFT, expand = True, fill = BOTH)
+
+photo = PhotoImage(file = r"C:\Users\wpark\Desktop\SQA\rock.png")
+
+paperButton = tk.Button(textvariable = p, font =( 'Verdana', 15), command = lambda: play("Paper"))
+paperButton.pack(side = LEFT, expand = True, fill = BOTH)
+
+scissorButton = tk.Button(textvariable = s, font =( 'Verdana', 15), command = lambda: play("Scissors"))
+scissorButton.pack(side = LEFT, expand = True, fill = BOTH)
+window.mainloop()
+
+
+        
+            
+    
+        
