@@ -1,0 +1,141 @@
+
+class Token:
+    word = ""
+    id = None
+    #ongoing list of keyword and characters needed to be recognized from java
+    typeSpecs = ["int", "float", "double", "boolean", "String", "char"]
+    operators = ['+', '-', '*', '/', '%']
+    comparison = ['==', '<=', '>=', '!=', '!']
+    tryStatements = ["try", "catch", "finally"]
+    logic = ["true", "false"]
+    modifiers = ["public", "static", "private", "protected", "final", "abstract", "native"]
+
+    def __init__(self, word, id = None):
+        self.word = word
+        self.id = id
+        if id is None:
+            self.identify()
+
+    def identify(self):
+        if self.word == 'import':
+            self.id = "import_statement"
+        if self.word == '{':
+            self.id = "start_indent"
+        elif self.word == "/*":
+            self.id = "start_comment"
+        elif self.word == "*/":
+            self.id == "end_comment"
+        elif self.word == '}':
+            self.id = "end_indent"
+        elif self.word == "class":
+            self.id = "class_declaration"
+        elif self.word == "void":
+            self.id = "void"
+        elif self.word in self.typeSpecs:
+            self.id = "type_specifier"
+        elif self.word in self.modifiers:
+            self.id = "modifier"
+        elif self.word in self.tryStatements:
+            self.id = "try_statement"
+        elif self.word in self.logic:
+            self.id = "logical_expression"
+        elif self.word in self.operators:
+            self.id = "operator"
+        elif self.word in self.comparison:
+            self.id = "comparison_operator"
+
+
+
+        #list of if statements? make list of arrays to compare to
+class Node:
+    #head = False
+    line = None
+    indent = False
+    #nextBlock = None
+    tokens = []
+    #identifier = None
+
+    def __init__(self, line):
+        #token placeholder
+        self.line = line
+        self.tokenizeLine()
+        #self.identifier = identifier
+
+    def tokenizeLine(self):
+        #self.nextBlock = None
+        tklist = self.line.split()
+        for x in tklist:
+            if tklist[0] == "//":
+                temptk = Token(" ".join(tklist[1:len(tklist)]), "comment")
+                self.tokens.append(temptk)
+                break
+            else:
+                temptk = Token(x)
+                self.tokens.append(temptk)
+
+
+
+
+class Scanner:
+    #could turn java file into txt file and remove indents
+    infile = None
+    lineCount = 0
+    bracketCount = 0
+    progNodes = []
+    current = None
+    
+    #prepares java file for parser by creating tokens
+    def prepFile(self, f):
+        self.infile = open(f, "r+")
+        self.lineCount = len(self.infile.readlines())
+        self.infile.seek(0)
+        self.scanLines()
+        #print(inputFile.readLine())
+        
+    #used by prep file to scan lines from file
+    def scanLines(self):
+        pos = 0
+        print("h")
+        while(pos < self.lineCount):
+            #might remove
+            tempLine = self.infile.readline()
+            print("here")
+            self.addLine(tempLine)
+            pos += 1
+
+            """
+            if self.progNodes.len() != 0:
+
+            if tempLine.find("{") != -1 and tempLine.find('"') == -1:
+                self.addLine(tempLine.find("//"), "comment")
+            #checks if there is a comment present, but only if the "//" is found outside of quotes
+            if tempLine.find("//") != -1 and (tempLine.index("//") == 0 or tempLine[tempLine.index("//") - 1] != '"'):
+                self.addLine(tempLine.find("//"), "comment")
+            elif tempLine.find('class') != -1:
+                #passes just the word following class
+                self.addLine(tempLine[tempLine.find('class') + 6:tempLine.find('{')], 'class')
+            elif tempLine.find("if(") or tempLine.find("if (") or tempLine.find("while(") or tempLine.find("while (") != -1:
+                self.addLine(tempLine, "conditional")
+
+            else:
+                self.addLine(tempLine, "statement")
+            """
+    #used by prepfile
+    def addLine(self, line):
+        tempN = Node(line)
+        self.progNodes.append(tempN)
+    def showLine(self, num):
+        print(len(self.progNodes))
+        temp = self.progNodes[num]
+        for x in temp.tokens:
+            print(str(x.word) + ", " + str(x.id))
+    # def scanBlock(self):
+
+#create a scanner object then use prepfile on required file
+test = Scanner()
+
+#test.prepFile("helloworld.java")
+#tem = test.progNodes[0].tokens
+#print(str(tem[0].word))
+#print(len(test.progNodes))
+#test.showLine(0)
